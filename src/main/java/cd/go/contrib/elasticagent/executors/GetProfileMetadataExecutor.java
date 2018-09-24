@@ -35,6 +35,7 @@ public class GetProfileMetadataExecutor implements RequestExecutor {
     public static final Metadata POD_CONFIGURATION = new Metadata("PodConfiguration", false, false);
     public static final Metadata SPECIFIED_USING_POD_CONFIGURATION = new Metadata("SpecifiedUsingPodConfiguration", true, false);
     public static final Metadata PRIVILEGED = new Metadata("Privileged", false, false);
+    public static final Metadata MAX_PENDING_PODS_COUNT = new Metadata("MaxPendingPods", false, false);
     public static final List<Metadata> FIELDS = new ArrayList<>();
 
     static {
@@ -45,6 +46,7 @@ public class GetProfileMetadataExecutor implements RequestExecutor {
         FIELDS.add(POD_CONFIGURATION);
         FIELDS.add(SPECIFIED_USING_POD_CONFIGURATION);
         FIELDS.add(PRIVILEGED);
+        FIELDS.add(MAX_PENDING_PODS_COUNT);
     }
 
     @Override

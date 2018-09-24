@@ -39,6 +39,7 @@ import static cd.go.contrib.elasticagent.Constants.*;
 import static cd.go.contrib.elasticagent.KubernetesPlugin.LOG;
 import static cd.go.contrib.elasticagent.executors.GetProfileMetadataExecutor.POD_CONFIGURATION;
 import static cd.go.contrib.elasticagent.executors.GetProfileMetadataExecutor.PRIVILEGED;
+import static cd.go.contrib.elasticagent.utils.Util.catFile;
 import static cd.go.contrib.elasticagent.utils.Util.getSimpleDateFormat;
 import static java.lang.String.valueOf;
 import static java.text.MessageFormat.format;
@@ -54,7 +55,8 @@ public class KubernetesInstanceFactory {
     }
 
     private KubernetesInstance create(CreateAgentRequest request, PluginSettings settings, KubernetesClient client, PluginRequest pluginRequest) {
-        String containerName = format("{0}-{1}", KUBERNETES_POD_NAME_PREFIX, UUID.randomUUID().toString());
+//        String containerName = format("{0}-{1}", KUBERNETES_POD_NAME_PREFIX, UUID.randomUUID().toString());
+        String containerName = format("{0}-{1}", settings.getNamespace(), UUID.randomUUID().toString());
 
         Container container = new Container();
         container.setName(containerName);
@@ -66,6 +68,7 @@ public class KubernetesInstanceFactory {
 
         ObjectMeta podMetadata = new ObjectMeta();
         podMetadata.setName(containerName);
+        podMetadata.setNamespace(settings.getNamespace());
 
         PodSpec podSpec = new PodSpec();
         podSpec.setContainers(Arrays.asList(container));
@@ -143,8 +146,9 @@ public class KubernetesInstanceFactory {
                 createdAt = new DateTime(getSimpleDateFormat().parse(metadata.getCreationTimestamp())).withZone(DateTimeZone.UTC);
             }
             String environment = metadata.getLabels().get(ENVIRONMENT_LABEL_KEY);
+            String profile = metadata.getLabels().get(KUBERNETES_POD_AGENT_PROFILE);
             Long jobId = Long.valueOf(metadata.getLabels().get(JOB_ID_LABEL_KEY));
-            kubernetesInstance = new KubernetesInstance(createdAt, environment, metadata.getName(), metadata.getAnnotations(), jobId, PodState.fromPod(elasticAgentPod));
+            kubernetesInstance = new KubernetesInstance(createdAt, environment, metadata.getName(), metadata.getAnnotations(), jobId, PodState.fromPod(elasticAgentPod), profile);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -193,6 +197,7 @@ public class KubernetesInstanceFactory {
         }
 
         labels.put(KUBERNETES_POD_KIND_LABEL_KEY, KUBERNETES_POD_KIND_LABEL_VALUE);
+        labels.put(KUBERNETES_POD_AGENT_PROFILE, request.properties().getOrDefault("Profile", "Unknown"));
 
         return labels;
     }
@@ -211,8 +216,12 @@ public class KubernetesInstanceFactory {
     }
 
     private KubernetesInstance createUsingPodYaml(CreateAgentRequest request, PluginSettings settings, KubernetesClient client, PluginRequest pluginRequest) {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         String podYaml = request.properties().get(POD_CONFIGURATION.getKey());
+        if (podYaml.endsWith(".yml")) {
+            podYaml = catFile(podYaml);
+        }
+
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         String templatizedPodYaml = getTemplatizedPodYamlString(podYaml);
 
         Pod elasticAgentPod = new Pod();
@@ -241,6 +250,10 @@ public class KubernetesInstanceFactory {
         context.put(CONTAINER_POSTFIX, UUID.randomUUID().toString());
         context.put(GOCD_AGENT_IMAGE, "gocd/gocd-agent-alpine-3.5");
         context.put(LATEST_VERSION, "v17.10.0");
+        String namespace = catFile("/var/run/secrets/kubernetes.io/serviceaccount/namespace");
+        context.put(POD_PREFIX, StringUtils.isNotBlank(namespace) ? namespace : "");
+        context.put(CONTAINER_PREFIX, StringUtils.isNotBlank(namespace) ? namespace : "");
+        context.put(NAMESPACE, StringUtils.isNotBlank(namespace) ? namespace : "default");
         return context;
     }
 }

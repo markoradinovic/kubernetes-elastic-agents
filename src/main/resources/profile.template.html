@@ -169,6 +169,16 @@
         </div>
 
         <div class="form_item_block">
+            <label ng-class="{'is-invalid-label': GOINPUTNAME[MaxPendingPods].$error.server}">Maximum Pending Pods count:
+                <div class="tooltip-info">
+                  <span class="tooltip-content tooltip-content-right">The maximum number of agent pods.</span>
+                </div>
+            </label>
+            <input ng-class="{'is-invalid-input': GOINPUTNAME[MaxPendingPods].$error.server}" type="text" ng-model="MaxPendingPods" ng-required="false"/>
+            <span class="form_error form-error" ng-class="{'is-visible': GOINPUTNAME[MaxPendingPods].$error.server}" ng-show="GOINPUTNAME[MaxPendingPods].$error.server">{{GOINPUTNAME[MaxPendingPods].$error.server}}</span>
+        </div>
+
+        <div class="form_item_block">
             <label ng-class="{'is-invalid-label': GOINPUTNAME[Environment].$error.server}">Environment Variables
                 <small>(Enter one variable per line)</small>
                 <div class="tooltip-info">

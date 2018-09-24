@@ -65,6 +65,17 @@
 			border-radius:    3px;
 			background-color: #f6f8fa;
 		}
+
+		[data-plugin-style-id="kubernetes-plugin"] .checkboxtab:checked ~ label {
+			background-color: #dfdef0;
+			border:           1px solid;
+			border-bottom:    none;
+		}
+
+		[data-plugin-style-id="kubernetes-plugin"] .checkboxtab:checked ~ .content {
+			z-index: 1;
+			display: block !important;
+		}
 	</style>
 
 	<div class="row">
@@ -88,6 +99,13 @@
 		<label>Maximum pending pods</label>
 		<input type="text" ng-model="pending_pods_count" ng-required="true"/>
 		<span class="form_error" ng-show="GOINPUTNAME[pending_pods_count].$error.server">{{GOINPUTNAME[pending_pods_count].$error.server}}</span>
+		<label class="form-help-content">Defaults to <code>10 pods</code>.</label>
+	</div>
+
+	<div class="row">
+		<label>Use profile configuration for Maximum pending pods</label>
+		<input type="checkbox" ng-model="use_profile_pending_pods_count" ng-required="true" value="true" ng-true-value="true" ng-false-value="false"/>
+		<span class="form_error" ng-show="GOINPUTNAME[use_profile_pending_pods_count].$error.server">{{GOINPUTNAME[use_profile_pending_pods_count].$error.server}}</span>
 		<label class="form-help-content">Defaults to <code>10 pods</code>.</label>
 	</div>
 

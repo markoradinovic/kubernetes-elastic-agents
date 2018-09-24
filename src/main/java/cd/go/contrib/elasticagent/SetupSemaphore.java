@@ -25,11 +25,13 @@ class SetupSemaphore implements Runnable {
     private final Integer maxAllowedPendingPods;
     private final Map<String, KubernetesInstance> instances;
     private final Semaphore semaphore;
+    private final String profile;
 
-    public SetupSemaphore(Integer maxAllowedPendingPods, Map<String, KubernetesInstance> instances, Semaphore semaphore) {
+    public SetupSemaphore(Integer maxAllowedPendingPods, Map<String, KubernetesInstance> instances, Semaphore semaphore, String profile) {
         this.maxAllowedPendingPods = maxAllowedPendingPods;
         this.instances = instances;
         this.semaphore = semaphore;
+        this.profile = profile;
     }
 
     @Override
@@ -54,7 +56,7 @@ class SetupSemaphore implements Runnable {
     private List<KubernetesInstance> getPendingInstances(Map<String, KubernetesInstance> instances) {
         ArrayList<KubernetesInstance> pendingInstances = new ArrayList<>();
         for (KubernetesInstance kubernetesInstance : instances.values()) {
-            if (kubernetesInstance.isPending()) {
+            if (profile.equals(kubernetesInstance.profile()) && kubernetesInstance.isPending()) {
                 pendingInstances.add(kubernetesInstance);
             }
         }

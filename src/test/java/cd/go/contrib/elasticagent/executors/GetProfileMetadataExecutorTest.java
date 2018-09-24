@@ -43,57 +43,58 @@ public class GetProfileMetadataExecutorTest {
         GoPluginApiResponse response = new GetProfileMetadataExecutor().execute();
 
         assertThat(response.responseCode(), is(200));
-        String expectedJSON = "[\n" +
-                "  {\n" +
-                "    \"key\": \"Image\",\n" +
-                "    \"metadata\": {\n" +
-                "      \"required\": false,\n" +
-                "      \"secure\": false\n" +
-                "    }\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"key\": \"MaxMemory\",\n" +
-                "    \"metadata\": {\n" +
-                "      \"required\": false,\n" +
-                "      \"secure\": false\n" +
-                "    }\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"key\": \"MaxCPU\",\n" +
-                "    \"metadata\": {\n" +
-                "      \"required\": false,\n" +
-                "      \"secure\": false\n" +
-                "    }\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"key\": \"Environment\",\n" +
-                "    \"metadata\": {\n" +
-                "      \"required\": false,\n" +
-                "      \"secure\": false\n" +
-                "    }\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"key\": \"PodConfiguration\",\n" +
-                "    \"metadata\": {\n" +
-                "      \"required\": false,\n" +
-                "      \"secure\": false\n" +
-                "    }\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"key\": \"SpecifiedUsingPodConfiguration\",\n" +
-                "    \"metadata\": {\n" +
-                "      \"required\": true,\n" +
-                "      \"secure\": false\n" +
-                "    }\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"key\": \"Privileged\",\n" +
-                "    \"metadata\": {\n" +
-                "      \"required\": false,\n" +
-                "      \"secure\": false\n" +
-                "    }\n" +
-                "  }\n" +
-                "]";
+        String expectedJSON = "[{\"key\":\"Image\",\"metadata\":{\"required\":false,\"secure\":false}},{\"key\":\"MaxMemory\",\"metadata\":{\"required\":false,\"secure\":false}},{\"key\":\"MaxCPU\",\"metadata\":{\"required\":false,\"secure\":false}},{\"key\":\"Environment\",\"metadata\":{\"required\":false,\"secure\":false}},{\"key\":\"PodConfiguration\",\"metadata\":{\"required\":false,\"secure\":false}},{\"key\":\"SpecifiedUsingPodConfiguration\",\"metadata\":{\"required\":true,\"secure\":false}},{\"key\":\"Privileged\",\"metadata\":{\"required\":false,\"secure\":false}},{\"key\":\"MaxPendingPods\",\"metadata\":{\"required\":false,\"secure\":false}}]";
+//        String expectedJSON = "[\n" +
+//                "  {\n" +
+//                "    \"key\": \"Image\",\n" +
+//                "    \"metadata\": {\n" +
+//                "      \"required\": false,\n" +
+//                "      \"secure\": false\n" +
+//                "    }\n" +
+//                "  },\n" +
+//                "  {\n" +
+//                "    \"key\": \"MaxMemory\",\n" +
+//                "    \"metadata\": {\n" +
+//                "      \"required\": false,\n" +
+//                "      \"secure\": false\n" +
+//                "    }\n" +
+//                "  },\n" +
+//                "  {\n" +
+//                "    \"key\": \"MaxCPU\",\n" +
+//                "    \"metadata\": {\n" +
+//                "      \"required\": false,\n" +
+//                "      \"secure\": false\n" +
+//                "    }\n" +
+//                "  },\n" +
+//                "  {\n" +
+//                "    \"key\": \"Environment\",\n" +
+//                "    \"metadata\": {\n" +
+//                "      \"required\": false,\n" +
+//                "      \"secure\": false\n" +
+//                "    }\n" +
+//                "  },\n" +
+//                "  {\n" +
+//                "    \"key\": \"PodConfiguration\",\n" +
+//                "    \"metadata\": {\n" +
+//                "      \"required\": false,\n" +
+//                "      \"secure\": false\n" +
+//                "    }\n" +
+//                "  },\n" +
+//                "  {\n" +
+//                "    \"key\": \"SpecifiedUsingPodConfiguration\",\n" +
+//                "    \"metadata\": {\n" +
+//                "      \"required\": true,\n" +
+//                "      \"secure\": false\n" +
+//                "    }\n" +
+//                "  },\n" +
+//                "  {\n" +
+//                "    \"key\": \"Privileged\",\n" +
+//                "    \"metadata\": {\n" +
+//                "      \"required\": false,\n" +
+//                "      \"secure\": false\n" +
+//                "    }\n" +
+//                "  }\n" +
+//                "]";
 
         JSONAssert.assertEquals(expectedJSON, response.responseBody(), true);
     }

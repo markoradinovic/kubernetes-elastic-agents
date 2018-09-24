@@ -61,7 +61,7 @@ public class GetViewRequestExecutorTest {
             assertThat(field.key(), spanToShowError.text(), is("{{GOINPUTNAME[" + field.key() + "].$error.server}}"));
         }
 
-        final Elements inputs = document.select("textarea,input[type=text],select,input[type=radio]");
+        final Elements inputs = document.select("textarea,input[type=text],select,input[type=radio],input[type=checkbox]");
         assertThat(inputs, hasSize(GetPluginConfigurationExecutor.FIELDS.size()));
     }
 }

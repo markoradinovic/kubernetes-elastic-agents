@@ -17,6 +17,7 @@
 
 package cd.go.contrib.elasticagent.executors;
 
+import cd.go.contrib.elasticagent.Agent;
 import cd.go.contrib.elasticagent.AgentInstances;
 import cd.go.contrib.elasticagent.KubernetesInstance;
 import cd.go.contrib.elasticagent.RequestExecutor;
@@ -26,12 +27,14 @@ import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 
 import static cd.go.contrib.elasticagent.KubernetesPlugin.LOG;
 import static java.text.MessageFormat.format;
+import static org.apache.commons.lang3.StringUtils.stripToEmpty;
 
 public class ShouldAssignWorkRequestExecutor implements RequestExecutor {
     private final AgentInstances<KubernetesInstance> agentInstances;
     private final ShouldAssignWorkRequest request;
 
-    public ShouldAssignWorkRequestExecutor(ShouldAssignWorkRequest request, AgentInstances<KubernetesInstance> agentInstances) {
+    public ShouldAssignWorkRequestExecutor(ShouldAssignWorkRequest request,
+            AgentInstances<KubernetesInstance> agentInstances) {
         this.request = request;
         this.agentInstances = agentInstances;
     }
@@ -43,13 +46,22 @@ public class ShouldAssignWorkRequestExecutor implements RequestExecutor {
         if (pod == null) {
             return DefaultGoPluginApiResponse.success("false");
         }
+//        Agent.AgentState agentState = request.agent().agentState();
+//        boolean isAgentIdle = request.agent().configState().equals(Agent.ConfigState.Enabled)
+//                && (agentState.equals(Agent.AgentState.Idle) || agentState.equals(Agent.AgentState.Missing)
+//                        || agentState.equals(Agent.AgentState.LostContact));
+//
+//        boolean isRunningAgentIsHavingCorrectProfile = stripToEmpty(pod.profile())
+//                .equals(request.properties().getOrDefault("Profile", "Unknown"));
 
         if (request.jobIdentifier().getJobId().equals(pod.jobId())) {
-            LOG.debug(format("[should-assign-work] Job with identifier {0} can be assigned to an agent {1}.", request.jobIdentifier(), pod.name()));
+            LOG.debug(format("[should-assign-work] Job with identifier {0} can be assigned to an agent {1}.",
+                    request.jobIdentifier(), pod.name()));
             return DefaultGoPluginApiResponse.success("true");
         }
 
-        LOG.error(format("[should-assign-work] Job with identifier {0} can not be assigned to an agent {1}.", request.jobIdentifier(), pod.name()));
+        LOG.error(format("[should-assign-work] Job with identifier {0} can not be assigned to an agent {1}.",
+                request.jobIdentifier(), pod.name()));
         return DefaultGoPluginApiResponse.success("false");
     }
 }

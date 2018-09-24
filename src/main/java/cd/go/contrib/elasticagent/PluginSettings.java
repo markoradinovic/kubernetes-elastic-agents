@@ -23,6 +23,7 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.Period;
 
+import static cd.go.contrib.elasticagent.utils.Util.BooleanTypeAdapter;
 import static cd.go.contrib.elasticagent.utils.Util.IntTypeAdapter;
 
 public class PluginSettings {
@@ -37,6 +38,10 @@ public class PluginSettings {
     @Expose
     @SerializedName("pending_pods_count")
     private Integer maxPendingPods;
+
+    @Expose
+    @SerializedName("use_profile_pending_pods_count")
+    private Boolean useProfilePendingPodsCount;
 
     @Expose
     @SerializedName("kubernetes_cluster_url")
@@ -65,9 +70,19 @@ public class PluginSettings {
         this.clusterCACertData = clusterCACertData;
     }
 
+    public PluginSettings(String goServerUrl, String clusterUrl, String securityToken, String clusterCACertData,
+            String namespace) {
+        this.goServerUrl = goServerUrl;
+        this.clusterUrl = clusterUrl;
+        this.securityToken = securityToken;
+        this.clusterCACertData = clusterCACertData;
+        this.namespace = namespace;
+    }
+
     public static PluginSettings fromJSON(String json) {
         GsonBuilder gsonBuilder = new GsonBuilder().excludeFieldsWithoutExposeAnnotation();
         gsonBuilder.registerTypeAdapter(Integer.class, IntTypeAdapter);
+        gsonBuilder.registerTypeAdapter(Boolean.class, BooleanTypeAdapter);
         Gson gson = gsonBuilder.create();
         return gson.fromJson(json, PluginSettings.class);
     }
@@ -80,7 +95,7 @@ public class PluginSettings {
     }
 
     Integer getAutoRegisterTimeout() {
-        return getOrDefault(autoRegisterTimeout, 10);
+        return getOrDefault(autoRegisterTimeout, 5);
     }
 
     public Integer getMaxPendingPods() {

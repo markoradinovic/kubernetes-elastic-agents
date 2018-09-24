@@ -86,7 +86,7 @@ public class KubernetesAgentInstancesTest {
 
     @Test
     public void shouldCreateKubernetesPodUsingPodYamlAndCacheCreatedInstance() {
-        KubernetesInstance kubernetesInstance = new KubernetesInstance(new DateTime(), "test", "test-agent", new HashMap<>(), 100L, PodState.Running);
+        KubernetesInstance kubernetesInstance = new KubernetesInstance(new DateTime(), "test", "test-agent", new HashMap<>(), 100L, PodState.Running, "default");
         when(mockKubernetesInstanceFactory.create(mockCreateAgentRequest, mockPluginSettings, mockKubernetesClient, mockPluginRequest, true)).
                 thenReturn(kubernetesInstance);
 
@@ -99,7 +99,7 @@ public class KubernetesAgentInstancesTest {
 
     @Test
     public void shouldCreateKubernetesPodAndCacheCreatedInstance() {
-        KubernetesInstance kubernetesInstance = new KubernetesInstance(new DateTime(), "test", "test-agent", new HashMap<>(), 100L, PodState.Running);
+        KubernetesInstance kubernetesInstance = new KubernetesInstance(new DateTime(), "test", "test-agent", new HashMap<>(), 100L, PodState.Running, "default");
         when(mockKubernetesInstanceFactory.create(mockCreateAgentRequest, mockPluginSettings, mockKubernetesClient, mockPluginRequest, false)).
                 thenReturn(kubernetesInstance);
         testProperties.put("SpecifiedUsingPodConfiguration", "false");
@@ -110,7 +110,7 @@ public class KubernetesAgentInstancesTest {
 
     @Test
     public void shouldNotCreatePodWhenOutstandingRequestsExistForJobs() {
-        KubernetesInstance kubernetesInstance = new KubernetesInstance(new DateTime(), "test", "test-agent", new HashMap<>(), 100L, PodState.Running);
+        KubernetesInstance kubernetesInstance = new KubernetesInstance(new DateTime(), "test", "test-agent", new HashMap<>(), 100L, PodState.Running, "default");
         when(mockKubernetesInstanceFactory.create(mockCreateAgentRequest, mockPluginSettings, mockKubernetesClient, mockPluginRequest, false)).
                 thenReturn(kubernetesInstance);
         testProperties.put("SpecifiedUsingPodConfiguration", "false");
@@ -144,7 +144,7 @@ public class KubernetesAgentInstancesTest {
         when(mockPluginSettings.getMaxPendingPods()).thenReturn(1);
 
         //pending kubernetes pod
-        KubernetesInstance kubernetesInstance = new KubernetesInstance(new DateTime(), "test", "test-agent", new HashMap<>(), 100L, PodState.Pending);
+        KubernetesInstance kubernetesInstance = new KubernetesInstance(new DateTime(), "test", "test-agent", new HashMap<>(), 100L, PodState.Pending, "default");
         when(mockKubernetesInstanceFactory.create(mockCreateAgentRequest, mockPluginSettings, mockKubernetesClient, mockPluginRequest, false)).
                 thenReturn(kubernetesInstance);
         testProperties.put("SpecifiedUsingPodConfiguration", "false");
@@ -177,7 +177,7 @@ public class KubernetesAgentInstancesTest {
     @Test
     public void shouldSyncPodsStateFromClusterBeforeCreatingPod() {
         when(mockKubernetesInstanceFactory.create(mockCreateAgentRequest, mockPluginSettings, mockKubernetesClient, mockPluginRequest, false)).
-                thenReturn(new KubernetesInstance(new DateTime(), "test", "test-agent", new HashMap<>(), 100L, PodState.Running));
+                thenReturn(new KubernetesInstance(new DateTime(), "test", "test-agent", new HashMap<>(), 100L, PodState.Running, "default"));
 
         final KubernetesAgentInstances agentInstances = new KubernetesAgentInstances(factory, mockKubernetesInstanceFactory);
 

@@ -213,6 +213,7 @@ public class KubernetesAgentInstancesIntegrationTest {
         labels.put(Constants.JOB_ID_LABEL_KEY, createAgentRequest.jobIdentifier().getJobId().toString());
         labels.put(Constants.KUBERNETES_POD_KIND_LABEL_KEY, Constants.KUBERNETES_POD_KIND_LABEL_VALUE);
         labels.put(Constants.ENVIRONMENT_LABEL_KEY, createAgentRequest.environment());
+        labels.put(Constants.KUBERNETES_POD_AGENT_PROFILE, "Unknown");
 
         assertThat(elasticAgentPod.getMetadata().getLabels(), is(labels));
     }
@@ -335,6 +336,7 @@ public class KubernetesAgentInstancesIntegrationTest {
         labels.put(Constants.JOB_ID_LABEL_KEY, createAgentRequest.jobIdentifier().getJobId().toString());
         labels.put(Constants.KUBERNETES_POD_KIND_LABEL_KEY, Constants.KUBERNETES_POD_KIND_LABEL_VALUE);
         labels.put(Constants.ENVIRONMENT_LABEL_KEY, createAgentRequest.environment());
+        labels.put(Constants.KUBERNETES_POD_AGENT_PROFILE, "Unknown");
 
         labels.put("app", "gocd-agent");
 

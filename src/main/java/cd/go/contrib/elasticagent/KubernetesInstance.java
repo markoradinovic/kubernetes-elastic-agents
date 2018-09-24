@@ -29,14 +29,16 @@ public class KubernetesInstance {
     private final Map<String, String> properties;
     private final Long jobId;
     private final PodState state;
+    private final String profile;
 
-    public KubernetesInstance(DateTime createdAt, String environment, String name, Map<String, String> properties, Long jobId, PodState state) {
+    public KubernetesInstance(DateTime createdAt, String environment, String name, Map<String, String> properties, Long jobId, PodState state, String profile) {
         this.createdAt = createdAt.withZone(DateTimeZone.UTC);
         this.environment = environment;
         this.name = name;
         this.properties = properties;
         this.jobId = jobId;
         this.state = state;
+        this.profile = profile;
     }
 
     public void terminate(KubernetesClient client) {
@@ -65,5 +67,9 @@ public class KubernetesInstance {
 
     public boolean isPending() {
         return this.state.equals(PodState.Pending);
+    }
+
+    public String profile() {
+        return profile;
     }
 }

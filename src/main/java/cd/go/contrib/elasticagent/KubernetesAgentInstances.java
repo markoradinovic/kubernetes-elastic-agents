@@ -18,6 +18,7 @@ package cd.go.contrib.elasticagent;
 
 import cd.go.contrib.elasticagent.model.JobIdentifier;
 import cd.go.contrib.elasticagent.requests.CreateAgentRequest;
+import cd.go.contrib.elasticagent.utils.Util;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodList;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -59,10 +60,15 @@ public class KubernetesAgentInstances implements AgentInstances<KubernetesInstan
 
     @Override
     public KubernetesInstance create(CreateAgentRequest request, PluginSettings settings, PluginRequest pluginRequest) {
-        final Integer maxAllowedContainers = settings.getMaxPendingPods();
+        // Use profile configuration
+//        final Integer maxAllowedContainers = settings.getMaxPendingPods();
+        final Integer maxAllowedContainers = getProfileMaxPendingPods(request, settings);
         synchronized (instances) {
             refreshAll(pluginRequest);
-            doWithLockOnSemaphore(new SetupSemaphore(maxAllowedContainers, instances, semaphore));
+            LOG.info(Util.GSON.toJson(request));
+            String agentProfile = request.properties().getOrDefault("Profile", "Unknown");
+            LOG.info("Requested Agent with profile: " + agentProfile);
+            doWithLockOnSemaphore(new SetupSemaphore(maxAllowedContainers, instances, semaphore, agentProfile));
 
             if (semaphore.tryAcquire()) {
                 return createKubernetesInstance(request, settings, pluginRequest);
@@ -213,5 +219,20 @@ public class KubernetesAgentInstances implements AgentInstances<KubernetesInstan
 
     public boolean instanceExists(KubernetesInstance instance) {
         return instances.contains(instance);
+    }
+
+    private Integer getProfileMaxPendingPods(CreateAgentRequest createAgentRequest, PluginSettings settings) {
+        String maxPendingCount = createAgentRequest.properties().get("MaxPendingPods");
+        Integer maxAllowedPods = settings.getMaxPendingPods();
+
+        if (StringUtils.isNotBlank(maxPendingCount)) {
+            try {
+                return Integer.parseInt(maxPendingCount);
+            } catch (NumberFormatException e) {
+                LOG.error(e.getMessage(), e);
+                return maxAllowedPods;
+            }
+        }
+        return maxAllowedPods;
     }
 }

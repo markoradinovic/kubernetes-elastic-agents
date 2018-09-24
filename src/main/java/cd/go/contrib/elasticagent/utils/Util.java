@@ -28,13 +28,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.TimeZone;
 
 import static cd.go.contrib.elasticagent.Constants.KUBERNETES_POD_CREATION_TIME_FORMAT;
+import static cd.go.contrib.elasticagent.KubernetesPlugin.LOG;
 
 public class Util {
 
@@ -123,4 +127,36 @@ public class Util {
             }
         }
     };
+
+    public static TypeAdapter<Boolean> BooleanTypeAdapter = new TypeAdapter<Boolean>() {
+
+        @Override
+        public void write(JsonWriter out, Boolean value)
+                throws IOException {
+            out.value(value);
+        }
+
+        @Override
+        public Boolean read(JsonReader in) throws IOException {
+            if (in.peek() == JsonToken.NULL) {
+                in.nextNull();
+                return false;
+            }
+            String result = in.nextString();
+            if ("".equals(result)) {
+                return false;
+            }
+            return Boolean.parseBoolean(result);
+        }
+    };
+
+    public static String catFile(String filePath) {
+        try {
+            byte[] encoded = Files.readAllBytes(Paths.get(filePath));
+            return new String(encoded, Charset.defaultCharset());
+        } catch (IOException e) {
+            LOG.error(e.getMessage(), e);
+            return null;
+        }
+    }
 }
