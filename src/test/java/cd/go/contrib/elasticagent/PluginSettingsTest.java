@@ -65,7 +65,7 @@ public class PluginSettingsTest {
         PluginSettings pluginSettings = PluginSettings.fromJSON(new Gson().toJson(pluginSettingsMap));
 
         assertThat(pluginSettings.getGoServerUrl(), is("https://foo.go.cd/go"));
-        assertThat(pluginSettings.getAutoRegisterTimeout(), is(10));
+        assertThat(pluginSettings.getAutoRegisterTimeout(), is(5));
         assertThat(pluginSettings.getMaxPendingPods(), is(10));
         assertThat(pluginSettings.getClusterUrl(), is("https://cloud.example.com"));
         assertThat(pluginSettings.getCaCertData(), is("foo-ca-certs"));
@@ -78,7 +78,7 @@ public class PluginSettingsTest {
         PluginSettings pluginSettings = PluginSettings.fromJSON("{}");
 
         assertNull(pluginSettings.getGoServerUrl());
-        assertThat(pluginSettings.getAutoRegisterTimeout(), is(10));
+        assertThat(pluginSettings.getAutoRegisterTimeout(), is(5));
         assertThat(pluginSettings.getMaxPendingPods(), is(10));
         assertThat(pluginSettings.getNamespace(), is("default"));
         assertNull(pluginSettings.getClusterUrl());
